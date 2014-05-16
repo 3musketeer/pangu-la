@@ -25,7 +25,7 @@ var funcs = [
 					obj.timestamp = (new Date(obj.STARTTIME)).getTime();
 
 					data.data = obj
-					data.date = RegExp.$1
+					data.date = obj.STARTTIME
 
 					next();
 				}else{
@@ -39,7 +39,8 @@ var funcs = [
 		value: function(data, host) {
 			var engine = new LaEngine()
 			engine.add(TuxStateParser(host)) //解析字串
-			      .add(engine.save("[:data.host]_YYYYMMDD"))    //分主机按天保存
+			      //.add(engine.save("[:data.host]_YYYYMMDD"))    //分主机按天保存
+			      .add(engine.save("YYYYMMDD"))    //分主机按天保存
 				  .add(engine.save("YYYYMMDD", "TimeOutDetail", function(data) {
 					  					if (data.MAX >= 10) return data;
 										else return null;
