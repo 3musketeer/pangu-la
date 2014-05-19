@@ -20,6 +20,7 @@ var funcs = [
 				//printjson(obj)
 
 				obj.host = host
+				obj.timestamp = (new Date(obj.time)).getTime();
 				data.data = obj
 				data.date = obj.time
 
