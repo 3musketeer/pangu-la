@@ -46,7 +46,15 @@ var funcs = [
 											obj.type="ge20";
 										}
 										return obj;
-									}
+									},
+							"overflow": function(data) {
+											if (data.queued>data.serve) {
+												obj={};obj.name=data.name;obj.queue=data.queue;obj.host=data.host;
+												obj.type="overflow";
+											}else{
+												return null;
+											}
+										}
 				  }, "day")) //按平均时间统计
 				  .add(engine.showError())//显示错误
 				  .run(data,"TuxQue");
