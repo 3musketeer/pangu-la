@@ -46,7 +46,40 @@ var funcs = [
 										else return null;
 				  				}))
 			      .add(engine.top("TimeOutTop", "MAX", "day,month"))    //按日、月、年分别对流程的最大执行时间排名
-
+				  .add(engine.sum("TimeOutStat", "CALLED", {
+				 			"gt2s" : function(data) {
+										if (data.AVERAGE<2) return null;
+										var obj={};obj.SVRNAME="avg_gt_2s";obj.TRANSCODE=data.TRANSCODE;obj.host=data.host;
+										return obj;
+									},
+				 			"gt5s" : function(data) {
+										if (data.AVERAGE<5) return null;
+										var obj={};obj.SVRNAME="avg_gt_5s";obj.TRANSCODE=data.TRANSCODE;obj.host=data.host;
+										return obj;
+									},
+				 			"gt10s" : function(data) {
+										if (data.AVERAGE<10) return null;
+										var obj={};obj.SVRNAME="avg_gt_10s";obj.TRANSCODE=data.TRANSCODE;obj.host=data.host;
+										return obj;
+									}
+				  }, "day")) //按平均时间统计
+				  .add(engine.sum("TimeOutStat", function(){return 1;}, {
+				 			"gt2s" : function(data) {
+										if (data.MAX<2) return null;
+										var obj={};obj.SVRNAME="max_gt_2s";obj.TRANSCODE=data.TRANSCODE;obj.host=data.host;
+										return obj;
+									},
+				 			"gt5s" : function(data) {
+										if (data.MAX<5) return null;
+										var obj={};obj.SVRNAME="max_gt_5s";obj.TRANSCODE=data.TRANSCODE;obj.host=data.host;
+										return obj;
+									},
+				 			"gt10s" : function(data) {
+										if (data.MAX<10) return null;
+										var obj={};obj.SVRNAME="max_gt_10s";obj.TRANSCODE=data.TRANSCODE;obj.host=data.host;
+										return obj;
+									}
+				  }, "day")) //按最大时间统计
 			      .add(engine.sum("CalledSum", "CALLED", 
 									  { 
 									/*	"byHostServer": ["SVRNAME", "host"],
