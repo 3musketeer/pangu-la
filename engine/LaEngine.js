@@ -140,9 +140,9 @@ db.system.js.save(
 										cache[tabname]=target
 									}
 									if (type.toLowerCase() == "max" && value <= target[field]) {
-										return next()
+                                        continue;
 									}else if (type.toLowerCase() == "min" && value >= target[field]) {
-										return next()
+                                        continue;
 									}
 
 									tab.remove(target)
@@ -191,7 +191,7 @@ db.system.js.save(
 							}
 
 							//不设置，则不统计
-							if (obj==null) return next();
+							if (obj==null) continue;
 
 							var count=0;
 							if ('function' == typeof field) {

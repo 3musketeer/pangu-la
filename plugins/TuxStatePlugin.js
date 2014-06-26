@@ -48,37 +48,44 @@ var funcs = [
 			      .add(engine.top("TimeOutTop", "MAX", "day,month"))    //按日、月、年分别对流程的最大执行时间排名
 				  .add(engine.sum("TimeOutStat", "CALLED", {
 				 			"gt2s" : function(data) {
-										if (data.AVERAGE<2) return null;
-										var obj={};obj.SVRNAME="avg_gt_2s";obj.TRANSCODE=data.TRANSCODE;obj.host=data.host;
-										return obj;
+										if (data.AVERAGE>=2) {
+                                            return {"SVRNAME":"avg_gt_2s", "TRANSCODE":data.TRANSCODE, "host":data.host};
+                                        }
 									},
 				 			"gt5s" : function(data) {
-										if (data.AVERAGE<5) return null;
-										var obj={};obj.SVRNAME="avg_gt_5s";obj.TRANSCODE=data.TRANSCODE;obj.host=data.host;
-										return obj;
+										if (data.AVERAGE>=5) { 
+                                            return {"SVRNAME":"avg_gt_5s", "TRANSCODE":data.TRANSCODE, "host":data.host};
+                                        }
 									},
 				 			"gt10s" : function(data) {
-										if (data.AVERAGE<10) return null;
-										var obj={};obj.SVRNAME="avg_gt_10s";obj.TRANSCODE=data.TRANSCODE;obj.host=data.host;
-										return obj;
-									}
+										if (data.AVERAGE>=10) {
+                                            return {"SVRNAME":"avg_gt_10s", "TRANSCODE":data.TRANSCODE, "host":data.host};
+                                        }
+									},
+                            "avgcount"  : function(data) {
+                                        return {"SVRNAME":"avgcount", "TRANSCODE":data.TRANSCODE, "host":data.host};
+                                    }
+                            
 				  }, "day")) //按平均时间统计
 				  .add(engine.sum("TimeOutStat", function(){return 1;}, {
 				 			"gt2s" : function(data) {
-										if (data.MAX<2) return null;
-										var obj={};obj.SVRNAME="max_gt_2s";obj.TRANSCODE=data.TRANSCODE;obj.host=data.host;
-										return obj;
+										if (data.MAX>=2) {
+                                            return {"SVRNAME":"max_gt_2s", "TRANSCODE":data.TRANSCODE, "host":data.host};
+                                        }
 									},
 				 			"gt5s" : function(data) {
-										if (data.MAX<5) return null;
-										var obj={};obj.SVRNAME="max_gt_5s";obj.TRANSCODE=data.TRANSCODE;obj.host=data.host;
-										return obj;
+										if (data.MAX>=5) {
+                                            return {"SVRNAME":"max_gt_5s", "TRANSCODE":data.TRANSCODE, "host":data.host};
+                                        }
 									},
 				 			"gt10s" : function(data) {
-										if (data.MAX<10) return null;
-										var obj={};obj.SVRNAME="max_gt_10s";obj.TRANSCODE=data.TRANSCODE;obj.host=data.host;
-										return obj;
-									}
+										if (data.MAX>=10) {
+                                            return {"SVRNAME":"max_gt_10s", "TRANSCODE":data.TRANSCODE, "host":data.host};
+                                        }
+									},
+                            "maxcount"   : function(data) {
+                                        return {"SVRNAME":"maxcount", "TRANSCODE":data.TRANSCODE, "host":data.host};
+                                    }
 				  }, "day")) //按最大时间统计
 			      .add(engine.sum("CalledSum", "CALLED", 
 									  { 
