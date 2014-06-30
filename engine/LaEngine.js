@@ -161,6 +161,56 @@ db.system.js.save(
 				}
 			}
 
+            //记录更新
+            this.group = function(name, f, group, scope) {
+                scope = scope || "day"
+				dtList = ["hours", "day", "month", "year"];
+				dtFormat = {"hours"	:	"YYMMDDHH",
+							"day"	:	"YYMMDD",
+							"month"	:	"YYMM",
+							"year"	:	"YY"}
+
+                return function(data, next) {
+
+                    for(var type in group) {
+                        //
+                        var obj = group[type];
+                        if ('function' == typeof obj) {
+                            obj = obj(data.data)
+                        }else if (obj instanceof Array) {
+                            arr = obj;
+                            obj ={};
+                            for(var i=0;i<arr.length;++i) {
+                                obj[arr[i]] = data.data[arr[i]];
+                            }
+                        }else{
+                            return next(new Error("Error group."+group))
+                        }
+
+                        //不设置，则不统计
+                        if (obj==null) continue;
+
+                        var target={};
+                            target = f(data.data)
+
+                        //按小时、日、月、年统计
+                        for(var i=0; i<dtList.length; ++i) {
+                            dt = dtList[i];
+
+                            if (~scope.toLowerCase().indexOf(dt)) {
+                                var tabname = data.type+name+dt.toUpperCase()+formatDate(dtFormat[dt], data);
+                                var tab = db.getCollection(tabname);
+                                
+                                tab.update(obj, target, {upsert:true});
+                            }
+                        }
+                    }
+
+					next()
+				}
+
+            }
+
 			//统计总数
 			this.sum = function(name, field, group, scope ) {
 				scope = scope || "day"
@@ -207,7 +257,11 @@ db.system.js.save(
 								if (~scope.toLowerCase().indexOf(dt)) {
 									var tabname = data.type+name+dt.toUpperCase()+formatDate(dtFormat[dt], data);
 									var tab = db.getCollection(tabname);
-									tab.update(obj, {$inc:{_count:count}}, { upsert: true });
+                                    if (typeof count === "number") {
+                                        tab.update(obj, {$inc:{_count:count}}, { upsert: true });
+                                    }else{
+                                        tab.update(obj, {$inc:count}, {upsert:true});
+                                    }
 								}
 							}
 						}

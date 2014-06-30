@@ -33,29 +33,25 @@ var funcs = [
 			var engine = new LaEngine()
 			engine.add(TuxQueParser(host)) //解析字串
 			      .add(engine.save("YYYYMMDD"))    //按天保存
-				  .add(engine.sum("List", function(){return 1;}, {
-				 			"exp" : function(data) {
-										var obj={};obj.name=data.name;obj.queue=data.queue;obj.host=data.host;
-										if (data.queued<5) {
-											obj.type="lt_5";
-										}else if (data.queued>=5&&data.queued<10){
-											obj.type="m5-10";
-										}else if (data.queued>=10&&data.queued<20) {
-											obj.type="m10-20";
-										}else if (data.queued>=20) {
-											obj.type="ge20";
-										}
-										return obj;
-									},
-							"overflow": function(data) {
-											if (data.queued>data.serve) {
-												obj={};obj.name=data.name;obj.queue=data.queue;obj.host=data.host;
-												obj.type="overflow";
-											}else{
-												return null;
-											}
-										}
-				  }, "day")) //按平均时间统计
+				  .add(engine.group("List", function(data){
+                                                var count = {"lt_5":0,"m5-10":0,"m10-20":0,"ge20":0,"overflow":0,"sum":1};
+                                                if (data.queued<5)
+                                                    count["lt_5"] = 1;
+                                                else if (data.queued>=5&&data.queued<10)
+                                                    count["m5-10"] = 1;
+                                                else if (data.queued>=10&&data.queued<20)
+                                                    count["m10-20"] = 1;
+                                                else if (data.queued>=20)
+                                                    count["ge20"]=1;
+
+                                                if (data.queued>data.serve) count["overflow"]=1;
+
+                                                return {"$inc":count, "$set":{"serve":data.serve}, "$max":{"max_queued":data.queued}};
+                                            }, {
+                                                "group" : function(data) {
+                                                            return {"name":data.name, "queue":data.queue, "host":data.host};
+                                                        }
+                                              }, "day")) //按平均时间统计
 				  .add(engine.showError())//显示错误
 				  .run(data,"TuxQue");
 		}

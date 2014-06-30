@@ -46,47 +46,31 @@ var funcs = [
 										else return null;
 				  				}))
 			      .add(engine.top("TimeOutTop", "MAX", "day,month"))    //按日、月、年分别对流程的最大执行时间排名
-				  .add(engine.sum("TimeOutStat", "CALLED", {
-				 			"gt2s" : function(data) {
-										if (data.AVERAGE>=2) {
-                                            return {"SVRNAME":"avg_gt_2s", "TRANSCODE":data.TRANSCODE, "host":data.host};
-                                        }
-									},
-				 			"gt5s" : function(data) {
-										if (data.AVERAGE>=5) { 
-                                            return {"SVRNAME":"avg_gt_5s", "TRANSCODE":data.TRANSCODE, "host":data.host};
-                                        }
-									},
-				 			"gt10s" : function(data) {
-										if (data.AVERAGE>=10) {
-                                            return {"SVRNAME":"avg_gt_10s", "TRANSCODE":data.TRANSCODE, "host":data.host};
-                                        }
-									},
-                            "avgcount"  : function(data) {
-                                        return {"SVRNAME":"avgcount", "TRANSCODE":data.TRANSCODE, "host":data.host};
-                                    }
-                            
-				  }, "day")) //按平均时间统计
-				  .add(engine.sum("TimeOutStat", function(){return 1;}, {
-				 			"gt2s" : function(data) {
-										if (data.MAX>=2) {
-                                            return {"SVRNAME":"max_gt_2s", "TRANSCODE":data.TRANSCODE, "host":data.host};
-                                        }
-									},
-				 			"gt5s" : function(data) {
-										if (data.MAX>=5) {
-                                            return {"SVRNAME":"max_gt_5s", "TRANSCODE":data.TRANSCODE, "host":data.host};
-                                        }
-									},
-				 			"gt10s" : function(data) {
-										if (data.MAX>=10) {
-                                            return {"SVRNAME":"max_gt_10s", "TRANSCODE":data.TRANSCODE, "host":data.host};
-                                        }
-									},
-                            "maxcount"   : function(data) {
-                                        return {"SVRNAME":"maxcount", "TRANSCODE":data.TRANSCODE, "host":data.host};
-                                    }
-				  }, "day")) //按最大时间统计
+                  .add(engine.group("TimeOutStat", function(data){
+                                                        var count = {"avg_gt_2s":0,"avg_gt_5s":0,"avg_gt_30s":0,"avg_gt_60s":0,"avgcount":data.CALLED,
+                                                                     "max_gt_2s":0,"max_gt_5s":0,"max_gt_30s":0,"max_gt_60s":0,"maxcount":1};
+                                                        if (data.AVERAGE>=2)
+                                                            count["avg_gt_2s"]=data.CALLED;
+                                                        if (data.AVERAGE>=5)
+                                                            count["avg_gt_5s"]=data.CALLED;
+                                                        if (data.AVERAGE>=30)
+                                                            count["avg_gt_30s"]=data.CALLED;
+                                                        if (data.AVERAGE>=60)
+                                                            count["avg_gt_60s"]=data.CALLED;
+
+                                                        if (data.MAX>=2)
+                                                            count["max_gt_2s"]=1;
+                                                        if (data.MAX>=5)
+                                                            count["max_gt_5s"]=1;
+                                                        if (data.MAX>=30)
+                                                            count["max_gt_30s"]=1;
+                                                        if (data.MAX>=60)
+                                                            count["max_gt_60s"]=1;
+                                                        return {"$inc":count}
+                        
+                                                    }, {
+                                                        "group":function(data){return {"TRANSCODE":data.TRANSCODE, "host":data.host};}
+                  },"day"))
 			      .add(engine.sum("CalledSum", "CALLED", 
 									  { 
 									/*	"byHostServer": ["SVRNAME", "host"],
