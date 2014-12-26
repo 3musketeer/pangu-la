@@ -29,6 +29,8 @@ var funcs = [
 			var engine = new LaEngine()
 			engine.add(TuxMemParser(host)) //解析字串
 			      .add(engine.save("YYYYMMDD"))    //按天保存
+                  .add(engine.top("Max", "size", "day,month"))  //内存大小排名
+                  .add(engine.sum("Sum", "size", {"byHostTime":["host","time","timestamp"]}, "day"))  //求和
 				  .add(engine.showError())//显示错误
 				  .run(data,"TuxMem");
 		}

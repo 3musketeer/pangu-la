@@ -45,7 +45,7 @@ var funcs = [
 					  					if (data.MAX >= 10) return data;
 										else return null;
 				  				}))
-			      .add(engine.top("TimeOutTop", "MAX", "day,month"))    //按日、月、年分别对流程的最大执行时间排名
+			      .add(engine.top("TimeOutTop", "MAX", "day"))    //按日、月、年分别对流程的最大执行时间排名
                   .add(engine.group("TimeOutStat", function(data){
                                                         var count = {"avg_gt_2s":0,"avg_gt_5s":0,"avg_gt_30s":0,"avg_gt_60s":0,"avgcount":data.CALLED,
                                                                      "max_gt_2s":0,"max_gt_5s":0,"max_gt_30s":0,"max_gt_60s":0,"maxcount":1};
@@ -71,10 +71,10 @@ var funcs = [
                                                     }, {
                                                         "group":function(data){return {"TRANSCODE":data.TRANSCODE, "host":data.host};}
                   },"day"))
-			      .add(engine.sum("CalledSum", "CALLED", 
+			     /* .add(engine.sum("CalledSum", "CALLED", 
 									  { 
-									/*	"byHostServer": ["SVRNAME", "host"],
-										"byHostTrans": ["TRANSCODE", "host"], //暂不统计 */ 
+										"byHostServer": ["SVRNAME", "host"],
+										"byHostTrans": ["TRANSCODE", "host"], //暂不统计  
 										"byAllServer": function(data){
 														var obj={};obj.SVRNAME=data.SVRNAME;obj.host='all';
 														return obj;
@@ -85,6 +85,7 @@ var funcs = [
 													}
 									  }, 
 								"day,month" ))    //按小时、日、月、年分别对进程/流程的调用次数进行统计
+                                    */
 				  .add(engine.sum("CalledSumByTime", "CALLED", 
 							  		  {
 										  "atHours" : function(data) {
@@ -126,10 +127,11 @@ var funcs = [
 														return obj;
 													  }
 									  }, "month"))  //每月按天统计调用数
+                  /*
 			      .add(engine.sum("FailedSum", "FAILED", 
 									  { 
-									/*	"byHostServer": ["SVRNAME", "host"],
-										"byHostTrans": ["TRANSCODE", "host"], //暂不统计 */
+										"byHostServer": ["SVRNAME", "host"],
+										"byHostTrans": ["TRANSCODE", "host"], //暂不统计 
 										"byAllServer": function(data) {
 														var obj={};obj.SVRNAME=data.SVRNAME;obj.host='all';
 														return obj;
@@ -140,6 +142,7 @@ var funcs = [
 													}
 									  }, 
 								"day,month,year" ))    //按小时、日、月、年分别对进程/流程的调用异常进行统计
+                                    */
 				  .add(engine.sum("FailedSumByTime", "FAILED", 
 							  		  {
 										  "atHours" : function(data) {
@@ -168,11 +171,11 @@ var funcs = [
 														return obj;
 													  }
 									  }, "month"))  //每月按天统计调用数
-
+                  /*
 			      .add(engine.sum("AllTime", function(data){ return data.AVERAGE * data.CALLED}, 
 									  { 
-									/*	"byHostServer": ["SVRNAME", "host"],
-										"byHostTrans": ["TRANSCODE", "host"], //暂不统计 */
+										"byHostServer": ["SVRNAME", "host"],
+										"byHostTrans": ["TRANSCODE", "host"], //暂不统计 
 										"byAllServer": function(data) {
 														var obj={};obj.SVRNAME=data.SVRNAME;obj.host='all';
 														return obj;
@@ -183,7 +186,7 @@ var funcs = [
 													}
 									  }, 
 								"day,month" ))    //按日、月、年分别对进程/流程的调用时长进行统计
-
+                                */
 				  .add(engine.showError())//显示错误
 				  .run(data,"TuxState");
 		}
