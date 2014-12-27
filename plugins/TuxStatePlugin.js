@@ -71,10 +71,10 @@ var funcs = [
                                                     }, {
                                                         "group":function(data){return {"TRANSCODE":data.TRANSCODE, "host":data.host};}
                   },"day"))
-			     /* .add(engine.sum("CalledSum", "CALLED", 
+			      .add(engine.sum("CalledSum", "CALLED", 
 									  { 
-										"byHostServer": ["SVRNAME", "host"],
-										"byHostTrans": ["TRANSCODE", "host"], //暂不统计  
+										//"byHostServer": ["SVRNAME", "host"],
+										//"byHostTrans": ["TRANSCODE", "host"], //暂不统计  
 										"byAllServer": function(data){
 														var obj={};obj.SVRNAME=data.SVRNAME;obj.host='all';
 														return obj;
@@ -85,7 +85,6 @@ var funcs = [
 													}
 									  }, 
 								"day,month" ))    //按小时、日、月、年分别对进程/流程的调用次数进行统计
-                                    */
 				  .add(engine.sum("CalledSumByTime", "CALLED", 
 							  		  {
 										  "atHours" : function(data) {
@@ -127,11 +126,10 @@ var funcs = [
 														return obj;
 													  }
 									  }, "month"))  //每月按天统计调用数
-                  /*
 			      .add(engine.sum("FailedSum", "FAILED", 
 									  { 
-										"byHostServer": ["SVRNAME", "host"],
-										"byHostTrans": ["TRANSCODE", "host"], //暂不统计 
+				//						"byHostServer": ["SVRNAME", "host"],
+				//						"byHostTrans": ["TRANSCODE", "host"], //暂不统计 
 										"byAllServer": function(data) {
 														var obj={};obj.SVRNAME=data.SVRNAME;obj.host='all';
 														return obj;
@@ -141,8 +139,7 @@ var funcs = [
 														return obj;
 													}
 									  }, 
-								"day,month,year" ))    //按小时、日、月、年分别对进程/流程的调用异常进行统计
-                                    */
+								"day,month" ))    //按小时、日、月、年分别对进程/流程的调用异常进行统计
 				  .add(engine.sum("FailedSumByTime", "FAILED", 
 							  		  {
 										  "atHours" : function(data) {
