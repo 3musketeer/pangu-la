@@ -271,6 +271,25 @@ db.system.js.save(
 				}
 			}
 
+            //告警
+			this.warn = function(filter) {
+
+
+                return function(data, next) {
+
+                    if ('function' == typeof filter) {
+                        var obj = filter(data.data);
+                        if (obj) {
+                            var tabname = "warning" + formatDate("YYMMDD", data);
+                            var tab = db.getCollection(tabname);
+                            tab.insert(obj);
+                        }
+                    }
+
+                    next();
+                }
+            }
+
 			this.showError = function() {
 				return function(err,data,next) {
 					  print("Error:"+err);

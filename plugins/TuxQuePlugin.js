@@ -53,6 +53,15 @@ var funcs = [
                                                             return {"name":data.name, "queue":data.queue, "host":data.host};
                                                         }
                                               }, "day")) //按平均时间统计
+                  .add(engine.warn(function(data){
+                                        if (data.queued > data.serve) {
+                                            return {"detail": "服务:"+data.name+"("+data.queue+")启动通道数:"+data.serve+",目前队列数:"+data.queued+".队列时间:"+data.time,
+                                                    "type": "level-"+Math.floor(data.queued/data.serve),
+                                                    "state": "0",
+                                                    "time": data.time,
+                                                    "host": data.host};
+                                        }
+                                    }))
 				  .add(engine.showError())//显示错误
 				  .run(data,"TuxQue");
 		}
@@ -62,3 +71,4 @@ var funcs = [
 funcs.forEach(function(item){
 	db.system.js.save(item);
 })
+

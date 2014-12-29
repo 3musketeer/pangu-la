@@ -184,6 +184,15 @@ var funcs = [
 									  }, 
 								"day,month" ))    //按日、月、年分别对进程/流程的调用时长进行统计
                                 */
+                  .add(engine.warn(function(data){
+                                        if (data.MAX > 5) {
+                                            return {"detail": "流程:"+data.TRANSCODE+"("+data.SVRNAME+")执行耗时达到:"+data.MAX+"秒.统计时间:"+data.time,
+                                                    "type": "level-"+Math.floor(data.MAX/5),
+                                                    "state": "0",
+                                                    "time": data.time,
+                                                    "host": data.host};
+                                        }
+                                    }))
 				  .add(engine.showError())//显示错误
 				  .run(data,"TuxState");
 		}
