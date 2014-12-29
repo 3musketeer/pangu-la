@@ -56,7 +56,7 @@ var funcs = [
                   .add(engine.warn(function(data){
                                         if (data.queued > data.serve) {
                                             return {"detail": "服务:"+data.name+"("+data.queue+")启动通道数:"+data.serve+",目前队列数:"+data.queued+".队列时间:"+data.time,
-                                                    "type": "level-"+Math.floor(data.queued/data.serve),
+                                                    "type": "level-100",
                                                     "state": "0",
                                                     "time": data.time,
                                                     "host": data.host};

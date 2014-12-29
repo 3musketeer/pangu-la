@@ -187,7 +187,7 @@ var funcs = [
                   .add(engine.warn(function(data){
                                         if (data.MAX > 5) {
                                             return {"detail": "流程:"+data.TRANSCODE+"("+data.SVRNAME+")执行耗时达到:"+data.MAX+"秒.统计时间:"+data.STARTTIME,
-                                                    "type": "level-"+Math.floor(data.MAX/5),
+                                                    "type": "level-100",
                                                     "state": "0",
                                                     "time": data.STARTTIME,
                                                     "host": data.host};
