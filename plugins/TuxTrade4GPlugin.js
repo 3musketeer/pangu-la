@@ -33,7 +33,7 @@ var funcs = [
         _id: "TuxTrade4GLoader",
         value: function(data, host){
             var engine = new LaEngine();
-            engine.add(TuxTransferParser(host)) //解析字符串
+            engine.add(TuxTrade4GParser(host)) //解析字符串
                   .add(engine.save("YYYYMMDD"))    //按天保存
                   .add(engine.group("List", function(data){
                         var count = {}, //serv desc
